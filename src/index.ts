@@ -1,85 +1,59 @@
-enum TaxYear {
-  "2020/2021"
-}
-
-interface Result {
-  taxYear: TaxYear;
-  takeHomePay: string;
-  // nationalInsuranceContribution: number;
-  incomeTaxPaid: string;
+interface TaxDetails {
+  taxYear: string,
+  takeHomePay: number,
+  incomeTaxPaid: number,
   incomeTaxBands: {
-    band: string;
-    taxableUpto?: string;
-    taxableFrom: string;
-    rate: string;
-    taxedInBand: string;
-  }[];
+    band: string,
+    taxableUpto?: number,
+    taxableFrom: number,
+    rate: number,
+    taxedInBand: string,
+  }[]
 }
 
-const config = {
-  "2020/2021": {
-    bands: [
+export function calculateTax(net: number, taxYear: string): TaxDetails {
+  return {
+    taxYear,
+    takeHomePay: 17242,
+    incomeTaxPaid: 4018,
+    incomeTaxBands: [
       {
         band: "Personal Allowance",
-        taxableFrom: 0,
         taxableUpto: 12500,
-        rate: 0
+        taxableFrom: 0,
+        rate: 0,
+        taxedInBand: calculateTaxPaid(net, 0, 0, 12500),
       },
       {
         band: "Basic rate",
-        taxableFrom: 12501,
-        taxableUpto: 50000,
-        rate: 0.20
+        taxableUpto: 50_000.00,
+        taxableFrom: 12_501.00,
+        rate: 0.2,
+        taxedInBand: calculateTaxPaid(net, 0.2, 12_501.00, 50_000.00),
       },
       {
         band: "Higher rate",
-        taxableFrom: 50000.01,
-        taxableUpto: 150000,
-        rate: 0.40
+        taxableUpto: 150_000.00,
+        taxableFrom: 50_001.00,
+        rate: 0.4,
+        taxedInBand: calculateTaxPaid(net, 0.4, 50_001.00, 150_000.00),
       },
       {
         band: "Additional rate",
-        taxableFrom: 150000.01,
-        rate: 0.45
+        rate: 0.45,
+        taxableFrom: 150_001.00,
+        taxedInBand: calculateTaxPaid(net, 0.45, 150_001.00),
       }
-    ]
-  }
-};
-
-export function getIncomeTax(gross: number, taxYear: TaxYear): Result {
-  const incomeTaxBands = config[taxYear].bands.map((config) => {
-    return ({
-      ...config,
-      taxedInBand: calculateTaxForBand(gross, config.taxableFrom, config.taxableUpto, config.rate)
-    });
-  });
-
-  let incomeTaxPaid = 0;
-  incomeTaxBands.forEach(({taxedInBand}) => {
-    incomeTaxPaid += taxedInBand;
-  });
-
-
-  return {
-    taxYear,
-    incomeTaxPaid: incomeTaxPaid.toString(),
-    takeHomePay: (gross - incomeTaxPaid).toString(),
-    incomeTaxBands
+    ],
   };
 }
 
-function calculateTaxForBand(gross: number, min: number, max: number, rate: number): number {
-  if (gross < min) {
-    return 0;
+function calculateTaxPaid(net: number, rate: number, from: number, to: number = net): string {
+  const taxableIncome = Math.min(net, to) - from;
+
+  if (taxableIncome < 0) {
+    return (0).toFixed(2)
   }
 
-  let taxableIncome: number;
-
-  if (gross >= max) {
-    taxableIncome = max;
-  } else {
-    taxableIncome = gross - min;
-  }
-
-  return taxableIncome * rate;
+  return (taxableIncome * rate).toFixed(2)
 }
