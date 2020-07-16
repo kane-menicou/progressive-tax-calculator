@@ -36,13 +36,13 @@ export function calculateTax(net: number, taxYear: string): TaxDetails {
         taxableUpto: 150_000.00,
         taxableFrom: 50_001.00,
         rate: 0.4,
-        taxedInBand: calculateTaxPaid(net, 0.4, 50_001.00, 150_000.00),
+        taxedInBand: '0.00',
       },
       {
         band: "Additional rate",
         rate: 0.45,
         taxableFrom: 150_001.00,
-        taxedInBand: calculateTaxPaid(net, 0.45, 150_001.00),
+        taxedInBand: '0.00',
       }
     ],
   };
@@ -50,10 +50,6 @@ export function calculateTax(net: number, taxYear: string): TaxDetails {
 
 function calculateTaxPaid(net: number, rate: number, from: number, to: number = net): string {
   const taxableIncome = Math.min(net, to) - from;
-
-  if (taxableIncome < 0) {
-    return (0).toFixed(2)
-  }
 
   return (taxableIncome * rate).toFixed(2)
 }
