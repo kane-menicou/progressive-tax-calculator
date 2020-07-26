@@ -21,7 +21,7 @@ interface TaxConfig {
   }[]
 }
 
-export const uk2020to2021Config: TaxConfig = {
+export const uk2020to2021IncomeTaxConfig: TaxConfig = {
   bands: [
     {
       band: "Personal Allowance",

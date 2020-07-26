@@ -1,10 +1,10 @@
-import calculateTax, {uk2020to2021Config} from "../index";
+import calculateTax, {uk2020to2021IncomeTaxConfig} from "../index";
 
 describe('index.ts', () => {
   describe('getIncomeTax()', () => {
-    describe('with uk2020to2021Config', () => {
+    describe('with uk2020to2021IncomeTaxConfig', () => {
       it('should get the correct values £20,000', () => {
-        expect(calculateTax(20_000, uk2020to2021Config)).toEqual(
+        expect(calculateTax(20_000, uk2020to2021IncomeTaxConfig)).toEqual(
           {
             takeHomePay: '18500.20',
             incomeTaxPaid: '1499.80',
@@ -42,7 +42,7 @@ describe('index.ts', () => {
       });
 
       it('should get the correct values £50,000', () => {
-        expect(calculateTax(50_000, uk2020to2021Config)).toEqual(
+        expect(calculateTax(50_000, uk2020to2021IncomeTaxConfig)).toEqual(
           {
             takeHomePay: '42500.20',
             incomeTaxPaid: '7499.80',
@@ -80,7 +80,7 @@ describe('index.ts', () => {
       });
 
       it('should get the correct values £44,391.54', () => {
-        expect(calculateTax(44_391.54, uk2020to2021Config)).toEqual(
+        expect(calculateTax(44_391.54, uk2020to2021IncomeTaxConfig)).toEqual(
           {
             incomeTaxPaid: "6378.11",
             takeHomePay: "38013.43",
@@ -118,7 +118,7 @@ describe('index.ts', () => {
       });
 
       it('should get the correct values £60,000', () => {
-        expect(calculateTax(60_000, uk2020to2021Config)).toEqual(
+        expect(calculateTax(60_000, uk2020to2021IncomeTaxConfig)).toEqual(
           {
             takeHomePay: '48500.60',
             incomeTaxPaid: '11499.40',
@@ -156,7 +156,7 @@ describe('index.ts', () => {
       });
 
       it('should get the correct values £150,000', () => {
-        expect(calculateTax(150_000, uk2020to2021Config)).toEqual(
+        expect(calculateTax(150_000, uk2020to2021IncomeTaxConfig)).toEqual(
           {
             takeHomePay: '102500.60',
             incomeTaxPaid: '47499.40',
@@ -194,7 +194,7 @@ describe('index.ts', () => {
       });
 
       it('should get the correct values £200,000', () => {
-        expect(calculateTax(200_000, uk2020to2021Config)).toEqual(
+        expect(calculateTax(200_000, uk2020to2021IncomeTaxConfig)).toEqual(
           {
             takeHomePay: '130001.05',
             incomeTaxPaid: '69998.95',
