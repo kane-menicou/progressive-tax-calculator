@@ -7,12 +7,11 @@ interface TaxDetailsBand {
 }
 
 interface TaxDetails {
-  takeHomePay: string,
-  incomeTaxPaid: string,
-  incomeTaxBands: TaxDetailsBand[]
+  taxPaid: string,
+  bands: TaxDetailsBand[]
 }
 
-interface TaxConfig {
+interface AnnualTaxConfig {
   bands: {
     band: string,
     taxableUpto?: number,
@@ -21,7 +20,33 @@ interface TaxConfig {
   }[]
 }
 
-export const uk2020to2021IncomeTaxConfig: TaxConfig = {
+export function createUk2020To2021NationalInsuranceConfig(categoryLetter: string): AnnualTaxConfig {
+  const category = categoryLetter.trim().toUpperCase();
+
+  return {
+    bands: [
+      {
+        band: "£120 to £183 a week",
+        taxableUpto: 9_516.51,
+        taxableFrom: 0,
+        rate: 0,
+      },
+      {
+        band: "£183.01 to £962 a week",
+        taxableUpto: 50_024.00,
+        taxableFrom: 9_516.52,
+        rate: category === 'A' ? 0.12 : 0.0585,
+      },
+      {
+        band: "Over £962 a week",
+        taxableFrom: 50_024.00,
+        rate: 0.02,
+      },
+    ]
+  };
+}
+
+export const uk2020to2021IncomeTaxConfig: AnnualTaxConfig = {
   bands: [
     {
       band: "Personal Allowance",
@@ -49,21 +74,18 @@ export const uk2020to2021IncomeTaxConfig: TaxConfig = {
   ]
 };
 
-export default function calculateTax(net: number, config: TaxConfig): TaxDetails {
+export default function calculateAnnualTax(netAnnual: number, config: AnnualTaxConfig): TaxDetails {
   const taxedInBands = config.bands.map(
-    ({rate, taxableFrom, taxableUpto}): number => calculateTaxPaid(net, rate, taxableFrom, taxableUpto)
+    ({rate, taxableFrom, taxableUpto}): number => calculateTaxPaid(netAnnual, rate, taxableFrom, taxableUpto)
   );
 
   const toSumOfValues = (total: number, current: number): number => total + current;
 
   const incomeTaxPaid = taxedInBands.reduce(toSumOfValues, 0);
 
-  const takeHomePay = formatCurrency(net - incomeTaxPaid);
-
   return {
-    takeHomePay,
-    incomeTaxPaid: formatCurrency(incomeTaxPaid),
-    incomeTaxBands: config.bands.map((config, index): TaxDetailsBand => ({
+    taxPaid: formatCurrency(incomeTaxPaid),
+    bands: config.bands.map((config, index): TaxDetailsBand => ({
       ...config,
       taxedInBand: formatCurrency(taxedInBands[index])
     }))
