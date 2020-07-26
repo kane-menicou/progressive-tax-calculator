@@ -9,6 +9,16 @@ describe('index.ts', () => {
         ['a'],
         [' A'],
         ['a  '],
+
+        ['H'],
+        ['h'],
+        [' H'],
+        ['h  '],
+
+        ['M'],
+        ['m'],
+        [' M'],
+        ['m  '],
       ]
     ).describe('with createUk2020To2021NationalInsuranceConfig("%s")', (categoryLetter: string) => {
       it('should get the correct values £52,000', () => {
@@ -133,6 +143,75 @@ describe('index.ts', () => {
                 band: "Over £962 a week",
                 taxableFrom: 50_024.00,
                 rate: 0.02,
+                taxedInBand: '0.00',
+              },
+            ],
+          }
+        );
+      });
+    });
+
+    each(
+      [
+        ['C'],
+        ['c'],
+        [' C'],
+        ['c  '],
+      ]
+    ).describe('with createUk2020To2021NationalInsuranceConfig("%s")', (categoryLetter: string) => {
+      it('should get the correct values £52,000', () => {
+        expect(calculateAnnualTax(52_000, createUk2020To2021NationalInsuranceConfig(categoryLetter))).toEqual(
+          {
+            taxPaid: '0.00',
+            bands: [
+              {
+                band: "£120 to £183 a week",
+                taxableUpto: 9_516.51,
+                taxableFrom: 0,
+                rate: 0,
+                taxedInBand: '0.00',
+              },
+              {
+                band: "£183.01 to £962 a week",
+                taxableUpto: 50_024.00,
+                taxableFrom: 9_516.52,
+                rate: 0,
+                taxedInBand: '0.00',
+              },
+              {
+                band: "Over £962 a week",
+                taxableFrom: 50_024.00,
+                rate: 0,
+                taxedInBand: '0.00',
+              },
+            ],
+          }
+        );
+      });
+
+      it('should get the correct values £49,431.41', () => {
+        expect(calculateAnnualTax(49_431.41, createUk2020To2021NationalInsuranceConfig(categoryLetter))).toEqual(
+          {
+            taxPaid: '0.00',
+            bands: [
+              {
+                band: "£120 to £183 a week",
+                taxableUpto: 9_516.51,
+                taxableFrom: 0,
+                rate: 0,
+                taxedInBand: '0.00',
+              },
+              {
+                band: "£183.01 to £962 a week",
+                taxableUpto: 50_024.00,
+                taxableFrom: 9_516.52,
+                rate: 0.0,
+                taxedInBand: '0.00',
+              },
+              {
+                band: "Over £962 a week",
+                taxableFrom: 50_024.00,
+                rate: 0.00,
                 taxedInBand: '0.00',
               },
             ],

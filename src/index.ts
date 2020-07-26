@@ -23,6 +23,26 @@ interface AnnualTaxConfig {
 export function createUk2020To2021NationalInsuranceConfig(categoryLetter: string): AnnualTaxConfig {
   const category = categoryLetter.trim().toUpperCase();
 
+  const getRate1 = (): number => {
+    if (category === 'C') {
+      return 0;
+    }
+
+    if (category === 'B') {
+      return 0.0585;
+    }
+
+    return 0.12; // Defaults to rate for 'A', 'H', and 'M'.
+  };
+
+  const getRate2 = (): number => {
+    if (category === 'C') {
+      return 0;
+    }
+
+    return 0.02;
+  };
+
   return {
     bands: [
       {
@@ -35,12 +55,12 @@ export function createUk2020To2021NationalInsuranceConfig(categoryLetter: string
         band: "£183.01 to £962 a week",
         taxableUpto: 50_024.00,
         taxableFrom: 9_516.52,
-        rate: category === 'A' ? 0.12 : 0.0585,
+        rate: getRate1(),
       },
       {
         band: "Over £962 a week",
         taxableFrom: 50_024.00,
-        rate: 0.02,
+        rate: getRate2(),
       },
     ]
   };
